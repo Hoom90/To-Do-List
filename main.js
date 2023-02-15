@@ -1,7 +1,8 @@
 const createBtn = document.getElementById("createBtn");
 const saveBtn = document.getElementById("saveBtn");
 const closeBtn = document.getElementById("closeBtn");
-const searchBox = document.getElementById("searchBox")
+const searchBox = document.getElementById("searchBox");
+const listItem = document.getElementById("listItem");
 
 const tasks = [];
 initiate();
@@ -10,6 +11,7 @@ createBtn.addEventListener("click", createForm);
 closeBtn.addEventListener("click", closeForm);
 saveBtn.addEventListener("click", saveForm);
 searchBox.addEventListener("keyup",search);
+listItem.addEventListener("click",itemClick);
 
 function initiate() {
   if (tasks.length == 0) {
@@ -23,7 +25,7 @@ function initiate() {
 
 function createForm(e) {
   var container = document.getElementById("modal");
-  if(container.style.display == "block") container.style.display = "none";
+  if(container.style.display == "block") container.style.display = "none"; 
   else container.style.display = "block"
 }
 
@@ -40,6 +42,7 @@ function saveForm(e) {
     saveToLocalStorage(tasks, tasks.length - 1);
     updateList(tasks.length - 1);
   }
+  closeForm()
 }
 
 function saveToLocalStorage(tasks, counter) {
@@ -59,7 +62,10 @@ function getLocalStorageLength() {
 function updateList(index) {
   var listContainer = document.querySelector("ul")
   var li = document.createElement("li")
-  li.textContent = tasks[index]
+  var a = document.createElement("a")
+  a.textContent = tasks[index]
+  a.setAttribute('id','listItem')
+  li.appendChild(a)
   listContainer.appendChild(li)
 }
 
