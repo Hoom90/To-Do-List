@@ -117,3 +117,7 @@ main ul li a:focus{
     float: left;
     background-color: #2196f3;
 }
+
+.clicked{
+    background-color: green;
+}
