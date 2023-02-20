@@ -2,105 +2,149 @@ const createBtn = document.getElementById("createBtn");
 const saveBtn = document.getElementById("saveBtn");
 const closeBtn = document.getElementById("closeBtn");
 const searchBox = document.getElementById("searchBox");
+const listContainer = document.querySelector("ul");
+const inputForm = document.getElementById("activity");
 
-const tasks = [];
+let tasks = readFromLocalStorage();
+
 initiate();
 
 createBtn.addEventListener("click", createForm);
 closeBtn.addEventListener("click", closeForm);
 saveBtn.addEventListener("click", saveForm);
-searchBox.addEventListener("keyup",search);
+searchBox.addEventListener("keyup", search);
 
-//This Method is The First Function To Read To Fill 'tasks[]' 
+//This Method is The First Function To Read To Fill 'tasks[]'
 function initiate() {
-  if (tasks.length == 0) {
-    for (var i = 0; i < getLocalStorageLength(); i++) {
-      tasks.push(readFromLocalStorage(i))
-    }
-    initiateList(tasks);
-    return;
-  }
+  renderList(tasks);
 }
 //This Method is Called When Create Button is Clicked
 function createForm(e) {
-  var container = document.getElementById("modal");
-  if(container.style.display == "block") container.style.display = "none"; 
-  else container.style.display = "block"
+  let container = document.getElementById("modal");
+  if (container.style.display == "block") container.style.display = "none";
+  else container.style.display = "block";
 }
 //This Method is Called When Close Button is Clicked
 function closeForm(e) {
-  var container = document.getElementById("modal");
+  let container = document.getElementById("modal");
   container.style.display = "none";
 }
 //This Method is Called When Save Button is Clicked
 function saveForm(e) {
-  var activityNameData = document.getElementById("activity").value;
-  if (activityNameData === "") return;
-  else {
-    tasks.push(activityNameData);
-    saveToLocalStorage(tasks, tasks.length - 1);
-    updateList(tasks.length - 1);
-  }
-  closeForm()
-}
-//This Method Saves To Storage
-function saveToLocalStorage(tasks, counter) {
-  localStorage.setItem("activity" + counter, JSON.stringify(tasks[counter]));
-  initiate();
-}
-//This Method Reads Data
-function readFromLocalStorage(counter) {
-  if (getLocalStorageLength == 0) return;
-  else return JSON.parse(localStorage.getItem("activity" + counter));
-}
-//This Method Reads Storage Length Data
-function getLocalStorageLength() {
-  return localStorage.length;
-}
-//This Method Updates The List Of Items In To-Do Lists
-function updateList(index) {
-  var listContainer = document.querySelector("ul")
-  createItem(listContainer,index)
+  if (inputForm.value === "") return closeForm();
+
+  const newTask = {
+    id: Date.now(),
+    data: inputForm.value,
+    status: false,
+  };
+
+  const newTaskEl = createItem(newTask);
+
+  listContainer.appendChild(newTaskEl);
+
+  tasks.push(newTask);
+  saveToLocalStorage(tasks);
+
+  closeForm();
 }
 
-function initiateList(){
-  var listContainer = document.querySelector("ul");
-  if (!localStorage.length == 0) {
-    for (var i = 0; i < tasks.length; i++) {
-      createItem(listContainer,i)
-    }
-  }
+
+
+
+
+//This Method initiates Items in Main Page
+function renderList(tasks) {
+listContainer.replaceChildren()
+
+  tasks.forEach((task) => {
+    const newTaskEl = createItem(task);
+
+    listContainer.appendChild(newTaskEl);
+  });
 }
 
-function createItem(listContainer,index){
-  var li = document.createElement("li")
-  var a = document.createElement("a")
-  a.textContent = tasks[index]
-  a.setAttribute('onclick','itemClick(this)')
-  li.appendChild(a)
-  listContainer.appendChild(li)
+
+
+
+
+//This Method Creates a New Item in Main Page
+function createItem(item) {
+  let li = document.createElement("li");
+  let titleSpan = document.createElement("span");
+  let deteleBtn = document.createElement("button");
+  let img = document.createElement("img");
+
+  li.setAttribute("id", `task-${item.id}`);
+
+  titleSpan.textContent = item.data;
+
+  deteleBtn.addEventListener("click", () => removeHandle(item.id));
+  img.src = "img/x.png";
+  deteleBtn.appendChild(img);
+
+  titleSpan.addEventListener("click", () => {
+    itemClick(item);
+  });
+
+  li.appendChild(titleSpan);
+  li.appendChild(deteleBtn);
+
+  return li;
 }
+//This Method Deletes Selected Item in Main Page
+function removeHandle(id) {
+  let filterdList = tasks.filter((task) => task.id !== id);
+
+  tasks = filterdList;
+
+  document.querySelector(`#task-${id}`).remove();
+
+  saveToLocalStorage(filterdList);
+}
+
+
+
+
+
+
 //This Method is Called When Search-Box is Clicked
 function search() {
-  // Declare variables
-  var filter, ul, li, a, i, txtValue;
-  filter = searchBox.value.toUpperCase();
-  ul = document.querySelector("main");
-  li = ul.getElementsByTagName('li');
+  // Declare letiables
+  const filterValue = searchBox.value
 
-  // Loop through all list items, and hide those who don't match the search query
-  for (i = 0; i < li.length; i++) {
-    a = li[i].getElementsByTagName("a")[0];
-    txtValue = a.textContent || a.innerText;
-    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-      li[i].style.display = "";
-    } else {
-      li[i].style.display = "none";
-    }
+  let filterdList = tasks.filter((task) => task.data.search(filterValue) !== -1);
+
+  renderList(filterdList)
+}
+//This Method Is For Clicked Item in Main Page
+function itemClick(item) {
+  if (item.status) {
+    item.status = false;
+    document.querySelector(`#task-${item.id}`).children[0].classList.remove("clicked");
+  } else {
+    item.status = true;
+    document.querySelector(`#task-${item.id}`).children[0].classList.add("clicked");
   }
+  saveToLocalStorage(tasks);
 }
 
-function itemClick(listItem){
-  if(listItem.className == "clicked") listItem.className =""
-  else listItem.className = "clicked"
+
+
+
+
+
+//This Method Saves To Storage
+function saveToLocalStorage(tasks) {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+//This Method Reads Data
+function readFromLocalStorage() {
+  const tasks = localStorage.getItem("tasks");
+
+  if (tasks) {
+    return JSON.parse(tasks);
+  } else {
+    return [];
+  }
 }

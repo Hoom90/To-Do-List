@@ -16,29 +16,19 @@ header{
     margin-top: 30px;
     text-align: center;
 }
-header input{
-    width: 80%;
+main div{
+    width: 100%;
+    margin-top: 30px;
+    text-align: center;
+}
+main div input{
+    width: 100%;
     padding: 10px;
     font-size: 14px;
     border-radius: 5px;
-    border: 0;
-    box-shadow: 0px 0px 1px black;
+    border: 1px solid rgb(187, 187, 187);
+    /* box-shadow: 0px 0px 10px black; */
     display: inline-block;
-}
-header button{
-    width: 38px;
-    height: 38px;
-    border-radius: 5px;
-    transform: translate(0px,0px);
-    border: none;
-    background: dodgerblue;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-    display: inline-block;
-}
-header button:hover{
-    box-shadow: 0px 0px 3px black;
 }
 main ul{
     width: 100%;
@@ -46,22 +36,32 @@ main ul{
     list-style: none;
     padding: 10px 0px;
 }
-main ul li a{
+main ul li{
     text-decoration: none;
     color: black;
-    background-color: white;
-    box-shadow: 0px 0px 1px black;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+main ul li span{
     padding: 10px;
+    width: 100%;
+    background-color: rgb(253, 255, 144);
     border-radius: 5px;
-    margin-top: 5px;
-    display: block;
+    box-shadow: 0px 0px 5px rgb(97, 97, 97);
+    cursor: pointer;
 }
-main ul li a:hover{
-    box-shadow: 0px 0px 3px rgb(0, 88, 175);
+main ul li span:hover{
+    box-shadow: 0px 0px 10px rgb(0, 88, 175);
 }
-main ul li a:focus{
-    background-color: rgb(74, 185, 0);
-    color: white;
+main ul li button{
+    margin-right: 5px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+main ul li img {
+    max-width: 20px;
 }
 #modal{
     display: none;
@@ -117,7 +117,41 @@ main ul li a:focus{
     float: left;
     background-color: #2196f3;
 }
-
 .clicked{
-    background-color: green;
+    background-color: rgb(13, 180, 13);
+    color:white
 }
+@media only screen and (max-width: 768px){
+    #modal main{
+        left: 1%;
+        top: 30%;
+        width: 98%;
+
+    }
+}
+
+
+
+
+
+
+    #createBtn{
+        padding: 15px;
+        border-radius: 100%;
+        border: 0;
+        background: white;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+        position: fixed;
+        bottom: 5%;
+        left: 5%;
+        box-shadow: 0px 0px 5px rgb(97, 97, 97);
+    }
+    #createBtn img{
+        display: block;
+        width: 20px;
+    }
+    #createBtn:hover{
+        box-shadow: 0px 0px 10px rgb(0, 128, 255);
+    }
